@@ -42,7 +42,7 @@ services:
         env_file: ./.env  
         environment:
         - TZ=Europe/Rome
-    #   - "NODE_RED_ENABLE_SAFE_MODE=true" //uncomment for safe mode
+    #   - "NODE_RED_ENABLE_SAFE_MODE=true" #uncomment for safe mode
         ports:
         - "1881:1880" 
         depends_on:
@@ -90,7 +90,7 @@ services:
                     cpus: '0.50'
                     memory: 500M  
 
-    nextcloud_dbDev:
+    nextcloud_dbDev: 
         container_name: nextcloud_dbDev
         image: mariadb
         command: "--transaction-isolation=READ-COMMITTED --binlog-format=ROW"
