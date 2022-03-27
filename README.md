@@ -9,6 +9,8 @@ I wrote this guide to facilitate remote access with [traefik](https://traefik.io
 
 [nextcloud](https://nextcloud.com/)
 
+strongly recommend install [docker compose v2](https://docs.docker.com/compose/cli-command/) 
+
 # step 1
 
 create folders: 
@@ -30,7 +32,7 @@ copy:
 
 copy:
 
-[env-example](https://github.com/william89731/traefik-service-dockerized/blob/master/env-example)
+[env-example](https://github.com/william89731/traefik-service-dockerized/blob/master/env-example) in your .env file
 
 navigate to your mother directory:
 
@@ -39,6 +41,12 @@ cd /home/$USER/dockerDev
 and launch:
 
 docker compose --env-file .env up  -d --remove-orphans
+
+# credits
+
+thanks to [danimart1191](https://github.com/danimart1991) for the inspiration to write this guide
+
+
 
 
 
