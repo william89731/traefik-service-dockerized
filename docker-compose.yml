@@ -1,0 +1,146 @@
+version: '3.8'
+networks:
+    containers:
+        ipam:
+            config:
+                - subnet: 172.30.0.0/24 
+services:
+    traefikDev:
+        image: "traefik:v2.7"
+        container_name: traefikDev
+        command:
+        #- "--log.level=DEBUG"
+        - "--api.insecure=true"
+        - "--providers.docker=true"
+        - "--providers.docker.exposedbydefault=false"
+        - "--entrypoints.websecure.address=:443"
+        - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+        #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"  //uncomment for test
+        - "--certificatesresolvers.myresolver.acme.email=$EMAIL"
+        - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+        env_file: ./.env
+        ports:
+        - 443:443
+        - 8080:8080
+        volumes:
+        - "./traefik/letsencrypt:/letsencrypt"
+        - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        networks:
+            containers:
+                ipv4_address: 172.30.0.5
+        deploy:            
+            restart_policy:
+                condition: unless-stopped
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 500M   
+             
+    noderedDev:        
+        image: nodered/node-red:latest
+        container_name: noderedDev
+        env_file: ./.env  
+        environment:
+        - TZ=Europe/Rome
+    #   - "NODE_RED_ENABLE_SAFE_MODE=true" //uncomment for safe mode
+        ports:
+        - "1881:1880" 
+        depends_on:
+        - "homeassistantDev"
+        volumes:
+        - ./nodered:/data
+        labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.noderedDev.rule=Host(`$NODERED_DOMAIN_DUCKNS`)"
+        - "traefik.http.routers.noderedDev.entrypoints=websecure"
+        - "traefik.http.routers.noderedDev.tls.certresolver=myresolver"
+        networks:
+            containers:
+                ipv4_address: 172.30.0.2
+        deploy:            
+            restart_policy:
+                condition: unless-stopped
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 500M   
+    homeassistantDev:     
+        image: ghcr.io/home-assistant/home-assistant:stable
+        container_name: homeassistantDev    
+        volumes:
+        - "./homeassistant:/config"
+        ports:
+        - "8124:8123"  
+        environment:
+        - "TZ=Europe/Rome"
+        env_file: ./.env
+  #      labels:
+  #      - "traefik.enable=true"
+  #      - "traefik.http.routers.homeassistantDev.rule=Host(`$HASSIO_DOMAIN_DUCKNS`)"
+  #      - "traefik.http.routers.homeassistantDev.entrypoints=websecure"
+  #      - "traefik.http.routers.homeassistantDev.tls.certresolver=myresolver"
+        networks:
+            containers:
+                ipv4_address: 172.30.0.3
+        deploy:            
+            restart_policy:
+                condition: unless-stopped
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 500M  
+
+    nextcloud_dbDev:
+        container_name: nextcloud_dbDev
+        image: mariadb
+        command: "--transaction-isolation=READ-COMMITTED --binlog-format=ROW"
+        volumes:
+        - ./nextcloud/mysql:/var/lib/mysql
+        env_file: ./.env
+        environment:
+            MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+            MYSQL_PASSWORD: $MYSQL_PASSWORD
+            MYSQL_DATABASE: $MYSQL_DATABASE
+            MYSQL_USER: $MYSQL_USER
+        networks:
+            containers:
+                ipv4_address: 172.30.0.4   
+        deploy:            
+            restart_policy:
+                condition: unless-stopped
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 500M   
+    nextcloudDev:
+        container_name: nextcloudDev
+        image: nextcloud
+        ports:
+        #- 444:443
+        - "8083:80"
+        depends_on:
+        - "nextcloud_dbDev"
+        volumes:
+        - ./nextcloud/appdata:/config
+        - ./nextcloud/data:/var/www/html
+#        labels:
+#        - "traefik.enable=true"
+#        - "traefik.http.routers.nextcloudDev.rule=Host(`$NEXTCLOUD_DOMAIN_DUCKNS`)"
+#        - "traefik.http.routers.nextcloudDev.entrypoints=websecure"
+#        - "traefik.http.routers.nextcloudDev.tls.certresolver=myresolver"
+        env_file: ./.env
+        environment:
+            MYSQL_PASSWORD: $MYSQL_PASSWORD
+            MYSQL_DATABASE: $MYSQL_DATABASE
+            MYSQL_USER: $MYSQL_USER
+            MYSQL_HOST: nextcloud_db  
+        networks:
+            containers:
+                ipv4_address: 172.30.0.6
+        deploy:            
+            restart_policy:
+                condition: unless-stopped
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 500M         
