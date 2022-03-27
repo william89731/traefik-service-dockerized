@@ -74,11 +74,11 @@ services:
         environment:
         - "TZ=Europe/Rome"
         env_file: ./.env
-  #      labels:
-  #      - "traefik.enable=true"
-  #      - "traefik.http.routers.homeassistantDev.rule=Host(`$HASSIO_DOMAIN_DUCKNS`)"
-  #      - "traefik.http.routers.homeassistantDev.entrypoints=websecure"
-  #      - "traefik.http.routers.homeassistantDev.tls.certresolver=myresolver"
+        labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.homeassistantDev.rule=Host(`$HASSIO_DOMAIN_DUCKNS`)"
+        - "traefik.http.routers.homeassistantDev.entrypoints=websecure"
+        - "traefik.http.routers.homeassistantDev.tls.certresolver=myresolver"
         networks:
             containers:
                 ipv4_address: 172.30.0.3
@@ -116,18 +116,17 @@ services:
         container_name: nextcloudDev
         image: nextcloud
         ports:
-        #- 444:443
         - "8083:80"
         depends_on:
         - "nextcloud_dbDev"
         volumes:
         - ./nextcloud/appdata:/config
         - ./nextcloud/data:/var/www/html
-#        labels:
-#        - "traefik.enable=true"
-#        - "traefik.http.routers.nextcloudDev.rule=Host(`$NEXTCLOUD_DOMAIN_DUCKNS`)"
-#        - "traefik.http.routers.nextcloudDev.entrypoints=websecure"
-#        - "traefik.http.routers.nextcloudDev.tls.certresolver=myresolver"
+        labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.nextcloudDev.rule=Host(`$NEXTCLOUD_DOMAIN_DUCKNS`)"
+        - "traefik.http.routers.nextcloudDev.entrypoints=websecure"
+        - "traefik.http.routers.nextcloudDev.tls.certresolver=myresolver"
         env_file: ./.env
         environment:
             MYSQL_PASSWORD: $MYSQL_PASSWORD
