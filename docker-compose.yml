@@ -6,8 +6,8 @@ networks:
                 - subnet: 172.30.0.0/24 
 services:
     traefikDev:
-        image: "traefik:v2.7"
         container_name: traefikDev
+        image: "traefik:v2.7"
         command:
         #- "--log.level=DEBUG"
         - "--api.insecure=true"
@@ -37,8 +37,8 @@ services:
                     memory: 500M   
              
     noderedDev:        
+        container_name: noderedDev   
         image: nodered/node-red:latest
-        container_name: noderedDev
         env_file: ./.env  
         environment:
         - TZ=Europe/Rome
@@ -65,8 +65,8 @@ services:
                     cpus: '0.50'
                     memory: 500M   
     homeassistantDev:     
-        image: ghcr.io/home-assistant/home-assistant:stable
-        container_name: homeassistantDev    
+        container_name: homeassistantDev  
+        image: ghcr.io/home-assistant/home-assistant:stable  
         volumes:
         - "./homeassistant:/config"
         ports:
