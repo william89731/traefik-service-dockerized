@@ -32,7 +32,7 @@ copy:
 
 copy:
 
-[env-example](https://github.com/william89731/traefik-service-dockerized/blob/master/env-example) in your .env file
+see [env-example](https://github.com/william89731/traefik-service-dockerized/blob/master/env-example) and modify your .env file
 
 navigate to your mother directory:
 
