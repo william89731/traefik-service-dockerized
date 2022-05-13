@@ -1,4 +1,10 @@
 ![20220327_120203](https://user-images.githubusercontent.com/68069659/160276555-e127963e-7bbf-4a5e-a9ab-3d3576bc5973.gif)
+
+[![os](https://img.shields.io/badge/os-linux-red)](https://www.linux.org/)
+[![docker version](https://img.shields.io/badge/docker%20version-20.10-brightgreen)](https://www.docker.com/)
+[![license](https://img.shields.io/badge/license-Apache--2.0-yellowgreen)](https://apache.org/licenses/LICENSE-2.0)
+[![donate](https://img.shields.io/badge/donate-wango-blue)](https://www.wango.org/donate.aspx)
+
 # traefik-service-dockerized
 
 I wrote this guide to facilitate remote access with [traefik](https://traefik.io/), to various services:
